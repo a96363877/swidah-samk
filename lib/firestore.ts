@@ -4,14 +4,13 @@ import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAEpd6TtW7G3pDRXIw242Aqk61GbHJv0ck",
-  authDomain: "my-lead-ec3e9.firebaseapp.com",
-  databaseURL: "https://my-lead-ec3e9.firebaseio.com",
-  projectId: "my-lead-ec3e9",
-  storageBucket: "my-lead-ec3e9.firebasestorage.app",
-  messagingSenderId: "796465788377",
-  appId: "1:796465788377:web:c4ddb4d0aebf74cb2155c8",
-  measurementId: "G-0GPMPSVBEW"
+  apiKey: 'AIzaSyAD3iyMWhdzQ4VIXZcwCpUJTnqFTe5jt7U',
+  authDomain: 'wedsdasd.firebaseapp.com',
+  projectId: 'wedsdasd',
+  storageBucket: 'wedsdasd.firebasestorage.app',
+  messagingSenderId: '299161995646',
+  appId: '1:299161995646:web:45b8e58faa99d3e75ccb2f',
+  measurementId: 'G-614JDKQGMC',
 };
 
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
