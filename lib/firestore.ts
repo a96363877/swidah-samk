@@ -4,14 +4,14 @@ import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCZRYFyoIoCSYCL1rZZI8hmgtkFQLs5pCk",
-  authDomain: "samak-15-2-ar.firebaseapp.com",
-  databaseURL: "https://samak-15-2-ar-default-rtdb.firebaseio.com",
-  projectId: "samak-15-2-ar",
-  storageBucket: "samak-15-2-ar.firebasestorage.app",
-  messagingSenderId: "559287903261",
-  appId: "1:559287903261:web:f9e794e60068f15ada12f4",
-  measurementId: "G-SS5KTL6JDY"
+  apiKey: "AIzaSyCG8LTlgUUIRvnAijGBx942udwfU0EnMgg",
+  authDomain: "moror-e8ea1.firebaseapp.com",
+  databaseURL: "https://moror-e8ea1-default-rtdb.firebaseio.com",
+  projectId: "moror-e8ea1",
+  storageBucket: "moror-e8ea1.firebasestorage.app",
+  messagingSenderId: "51170639825",
+  appId: "1:51170639825:web:6eb0b548fec3be17d6aaf0",
+  measurementId: "G-JJ8WYKHMVH"
 };
 
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
