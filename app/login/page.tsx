@@ -149,7 +149,7 @@ export default function NotificationsPage() {
     try {
       const docRef = doc(db, "pays", id)
       await updateDoc(docRef, { isHidden: true })
-      setNotifications(notifications.filter((notification) => notification.id !== id))
+      setNotifications(notifications.filter((notification: { id: string }) => notification.id !== id))
     } catch (error) {
       console.error("Error hiding notification:", error)
     }
