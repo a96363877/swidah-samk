@@ -4,14 +4,13 @@ import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
-   apiKey: "AIzaSyCTizRBYkfD4dfV_QjpPBOxJhYji3f5bQc",
-  authDomain: "swidah-mormr-enw.firebaseapp.com",
-  databaseURL: "https://swidah-mormr-enw-default-rtdb.firebaseio.com",
-  projectId: "swidah-mormr-enw",
-  storageBucket: "swidah-mormr-enw.firebasestorage.app",
-  messagingSenderId: "472801298504",
-  appId: "1:472801298504:web:0dc80587cf6c0839cef07d",
-  measurementId: "G-0V8CCB874S"
+  apiKey: "AIzaSyCaQoGawYg3uzc-FFxkoL1T0_c05HcTQKM",
+  authDomain: "funo-2dc40.firebaseapp.com",
+  projectId: "funo-2dc40",
+  storageBucket: "funo-2dc40.firebasestorage.app",
+  messagingSenderId: "646983421634",
+  appId: "1:646983421634:web:85599f560ab06eee57f55b",
+  measurementId: "G-S6DZM23PV3"
 };
 
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
